@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<CompassKeyboard name="Qwerty">
+<CompassKeyboard name="qwerty_swedish">
 
     <Layout name="vertical">
         <!-- global swipes -->
