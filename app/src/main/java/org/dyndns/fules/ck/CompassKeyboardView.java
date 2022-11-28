@@ -37,7 +37,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 interface EmbeddableItem {
-	public void calculateSizes();
+	void calculateSizes();
 }
 
 /*
@@ -452,36 +452,36 @@ public class CompassKeyboardView extends FrameLayout {
 			}
 
 			// figure out the direction of the swipe
-			int getDirection(float x, float y) {
-				int d;
-				float dx = (x - downX) * 2;
-				float dy = (y - downY) * 2;
+			int getDirection(float endX, float endY) {
+				int d = NONE;
+				float distX = endX - downX;
+				float distY = endY - downY;
+				float slackX = Math.abs(distY)/2;
+				float slackY = Math.abs(distX)/2;
+				float diaslack = Math.max(slackX, slackY);
+				int tapdist = 30;
 
-				if (dx < -xmax) {
-					if (dy < -ymax)
+				if(Math.abs(distX) < tapdist && Math.abs(distY) < tapdist) {
+				    d = TAP;
+				} else if(distY < - tapdist && Math.abs(distX) < slackX) {
+				    d = N;
+				} else if(distY > tapdist && Math.abs(distX) < slackX) {
+				    d = S;
+				} else if(distX < - tapdist && Math.abs(distY) < slackY) {
+				    d = W;
+				} else if(distX > tapdist && Math.abs(distY) < slackY) {
+				    d = E;
+				} else if(Math.abs(Math.abs(distX) - Math.abs(distY)) < diaslack) {
+				    if(distX < 0 && distY < 0) {
 						d = NW;
-					else if (dy < ymax)
-						d = W;
-					else
-						d = SW;
-				}
-				else if (dx < xmax) {
-					if (dy < -ymax)
-						d = N;
-					else if (dy < ymax)
-						d = TAP;
-					else
-						d = S;
-				}
-				else {
-					if (dy < -ymax)
+				    } else if(distX > 0 && distY < 0) {
 						d = NE;
-					else if (dy < ymax)
-						d = E;
-					else
+				    } else if(distX < 0 && distY > 0) {
+						d = SW;
+				    } else if(distX > 0 && distY > 0) {
 						d = SE;
+				    }
 				}
-
 				return d;
 			}
 
@@ -909,7 +909,7 @@ public class CompassKeyboardView extends FrameLayout {
 		fontSize = fm.descent - fm.ascent;
 		fontDispY = -fm.ascent;
 
-		Log.v(TAG, "keyMM=" + String.valueOf(keyMM) + ", xdpi=" + String.valueOf(metrics.xdpi) + ", ydpi=" + String.valueOf(metrics.ydpi) + ", nKeys=" + String.valueOf(nKeys) + ", nColumns=" + String.valueOf(nColumns) + ", totalWidth=" + String.valueOf(totalWidth) + ", max=" + String.valueOf(i) + ", sym=" + String.valueOf(sym) + ", gap=" + String.valueOf(gap) + ", reqFS="+String.valueOf(sym)+", fs="+String.valueOf(fontSize)+", asc="+String.valueOf(fm.ascent)+", desc="+String.valueOf(fm.descent));
+		Log.v(TAG, "keyMM=" + keyMM + ", xdpi=" + metrics.xdpi + ", ydpi=" + metrics.ydpi + ", nKeys=" + nKeys + ", nColumns=" + nColumns + ", totalWidth=" + totalWidth + ", max=" + i + ", sym=" + sym + ", gap=" + gap + ", reqFS="+ sym +", fs="+ fontSize +", asc="+ fm.ascent +", desc="+ fm.descent);
 
 		toast.setGravity(Gravity.TOP + Gravity.CENTER_HORIZONTAL, 0, -sym);
 

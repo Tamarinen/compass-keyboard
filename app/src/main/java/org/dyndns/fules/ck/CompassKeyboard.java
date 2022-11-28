@@ -192,7 +192,7 @@ public class CompassKeyboard extends InputMethodService implements KeyboardView.
 	}
 
 	public String updateLayout(int i) {
-		String s = mPrefs.getString("layout_path_" + String.valueOf(i), "");
+		String s = mPrefs.getString("layout_path_" + i, "");
 		if (s.length() > 0)
 			return updateLayout(s);
 		return "failed";
@@ -232,12 +232,12 @@ public class CompassKeyboard extends InputMethodService implements KeyboardView.
 	@Override public View onCreateInputView() {
 		DisplayMetrics metrics = new DisplayMetrics();
 		metrics.setTo(getResources().getDisplayMetrics());
-		Log.v(TAG, "onCreateInputView; w=" + String.valueOf(metrics.widthPixels) + ", h=" + String.valueOf(metrics.heightPixels) + ", forceP=" + String.valueOf(forcePortrait));
-		Log.v(TAG, "onCreateInputView; last w=" + String.valueOf(lastMetrics.widthPixels) + ", h=" + String.valueOf(lastMetrics.heightPixels) + ", forceP=" + String.valueOf(forcePortrait));
+		Log.v(TAG, "onCreateInputView; w=" + metrics.widthPixels + ", h=" + metrics.heightPixels + ", forceP=" + forcePortrait);
+		Log.v(TAG, "onCreateInputView; last w=" + lastMetrics.widthPixels + ", h=" + lastMetrics.heightPixels + ", forceP=" + forcePortrait);
 		if ((metrics.widthPixels != lastMetrics.widthPixels) || (metrics.heightPixels != lastMetrics.heightPixels)) {
 			lastMetrics.setTo(metrics);
 			boolean inPortrait = forcePortrait || (lastMetrics.widthPixels <= lastMetrics.heightPixels);
-			Log.v(TAG, "onCreateInputView; metrics changed, inPortrait=" + String.valueOf(inPortrait) + ", lastInPortrait=" + String.valueOf(lastInPortrait));
+			Log.v(TAG, "onCreateInputView; metrics changed, inPortrait=" + inPortrait + ", lastInPortrait=" + lastInPortrait);
 			if (inPortrait != lastInPortrait) {
 				lastInPortrait = inPortrait;
 				String s = currentLayout;

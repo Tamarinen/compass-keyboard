@@ -114,7 +114,7 @@ public class FilePicker extends Activity implements FilePickerView.ResultListene
 	}
 
 	public void onFileSelected(String path, boolean selected) {
-		Log.d(TAG, "Selected file; path='" + path + "', state='" + String.valueOf(selected) + "'");
+		Log.d(TAG, "Selected file; path='" + path + "', state='" + selected + "'");
         if ((prefName != null) && (prefKey != null) && (prefName.length() > 0) && (prefKey.length() > 0)) {
             Log.d(TAG, "Shared pref; name='" + prefName + "', key='" + prefKey + "'");
             SharedPreferences prefs = getSharedPreferences(prefName, 0);

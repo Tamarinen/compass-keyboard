@@ -259,7 +259,7 @@
         <!-- ============ -->
         <eat-comment />
         <!-- The background of a panel when it is inset from the left and right edges of the screen. -->
-        <attr name="panelBackground" format="reference|color" />
+        <!-- attr name="panelBackground" format="reference|color" / -->
         <!-- The background of a panel when it extends to the left and right edges of the screen. -->
         <attr name="panelFullBackground" format="reference|color" />
         <!-- Default color of foreground panel imagery. -->

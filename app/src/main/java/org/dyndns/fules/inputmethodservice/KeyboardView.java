@@ -144,24 +144,24 @@ public class KeyboardView extends View implements View.OnClickListener {
     private int mKeyTextColor;
     private float mShadowRadius;
     private int mShadowColor;
-    private float mBackgroundDimAmount;
+    private final float mBackgroundDimAmount;
 
     private TextView mPreviewText;
-    private PopupWindow mPreviewPopup;
+    private final PopupWindow mPreviewPopup;
     private int mPreviewTextSizeLarge;
     private int mPreviewOffset;
     private int mPreviewHeight;
     // Working variable
     private final int[] mCoordinates = new int[2];
 
-    private PopupWindow mPopupKeyboard;
+    private final PopupWindow mPopupKeyboard;
     private View mMiniKeyboardContainer;
     private KeyboardView mMiniKeyboard;
     private boolean mMiniKeyboardOnScreen;
     private View mPopupParent;
     private int mMiniKeyboardOffsetX;
     private int mMiniKeyboardOffsetY;
-    private Map<Key,View> mMiniKeyboardCache;
+    private final Map<Key,View> mMiniKeyboardCache;
     private Key[] mKeys;
 
     /** Listener for {@link OnKeyboardActionListener}. */
@@ -179,9 +179,9 @@ public class KeyboardView extends View implements View.OnClickListener {
     private int mVerticalCorrection;
     private int mProximityThreshold;
 
-    private boolean mPreviewCentered = false;
+    private final boolean mPreviewCentered = false;
     private boolean mShowPreview = true;
-    private boolean mShowTouchPoints = true;
+    private final boolean mShowTouchPoints = true;
     private int mPopupPreviewX;
     private int mPopupPreviewY;
 
@@ -192,8 +192,8 @@ public class KeyboardView extends View implements View.OnClickListener {
 
     private boolean mProximityCorrectOn;
 
-    private Paint mPaint;
-    private Rect mPadding;
+    private final Paint mPaint;
+    private final Rect mPadding;
 
     private long mDownTime;
     private long mLastMoveTime;
@@ -204,7 +204,7 @@ public class KeyboardView extends View implements View.OnClickListener {
     private int mDownKey = NOT_A_KEY;
     private long mLastKeyTime;
     private long mCurrentKeyTime;
-    private int[] mKeyIndices = new int[12];
+    private final int[] mKeyIndices = new int[12];
     private GestureDetector mGestureDetector;
     private int mPopupX;
     private int mPopupY;
@@ -212,11 +212,11 @@ public class KeyboardView extends View implements View.OnClickListener {
     private int mPopupLayout;
     private boolean mAbortKey;
     private Key mInvalidatedKey;
-    private Rect mClipRegion = new Rect(0, 0, 0, 0);
+    private final Rect mClipRegion = new Rect(0, 0, 0, 0);
     private boolean mPossiblePoly;
-    private SwipeTracker mSwipeTracker = new SwipeTracker();
-    private int mSwipeThreshold;
-    private boolean mDisambiguateSwipe;
+    private final SwipeTracker mSwipeTracker = new SwipeTracker();
+    private final int mSwipeThreshold;
+    private final boolean mDisambiguateSwipe;
 
     // Variables for dealing with multiple pointers
     private int mOldPointerCount = 1;
@@ -229,8 +229,8 @@ public class KeyboardView extends View implements View.OnClickListener {
     private static final int REPEAT_START_DELAY = 400;
     private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
 
-    private static int MAX_NEARBY_KEYS = 12;
-    private int[] mDistances = new int[MAX_NEARBY_KEYS];
+    private static final int MAX_NEARBY_KEYS = 12;
+    private final int[] mDistances = new int[MAX_NEARBY_KEYS];
 
     // For multi-tap
     private int mLastSentIndex;
@@ -238,12 +238,12 @@ public class KeyboardView extends View implements View.OnClickListener {
     private long mLastTapTime;
     private boolean mInMultiTap;
     private static final int MULTITAP_INTERVAL = 800; // milliseconds
-    private StringBuilder mPreviewLabel = new StringBuilder(1);
+    private final StringBuilder mPreviewLabel = new StringBuilder(1);
 
     /** Whether the keyboard bitmap needs to be redrawn before it's blitted. **/
     private boolean mDrawPending;
     /** The dirty region in the keyboard bitmap */
-    private Rect mDirtyRect = new Rect();
+    private final Rect mDirtyRect = new Rect();
     /** The keyboard bitmap for faster updates */
     private Bitmap mBuffer;
     /** Notes if the keyboard just changed, so that we could possibly reallocate the mBuffer. */
@@ -251,18 +251,18 @@ public class KeyboardView extends View implements View.OnClickListener {
     /** The canvas for the above mutable keyboard bitmap */
     private Canvas mCanvas;
     /** The accessibility manager for accessibility support */
-    private AccessibilityManager mAccessibilityManager;
+    private final AccessibilityManager mAccessibilityManager;
     /** The audio manager for accessibility support */
-    private AudioManager mAudioManager;
+    private final AudioManager mAudioManager;
     /** Whether the requirement of a headset to hear passwords if accessibility is enabled is announced. */
     private boolean mHeadsetRequiredToHearPasswordsAnnounced;
 
     /* ????: These originate in View, but can't be accessed from there. */
     private Context mContext;
-    private int mPaddingLeft = 0;
-    private int mPaddingRight = 0;
-    private int mPaddingTop = 0;
-    private int mPaddingBottom = 0;
+    private final int mPaddingLeft = 0;
+    private final int mPaddingRight = 0;
+    private final int mPaddingTop = 0;
+    private final int mPaddingBottom = 0;
 
     Handler mHandler;
 
@@ -1469,9 +1469,9 @@ public class KeyboardView extends View implements View.OnClickListener {
         static final int NUM_PAST = 4;
         static final int LONGEST_PAST_TIME = 200;
 
-        final float mPastX[] = new float[NUM_PAST];
-        final float mPastY[] = new float[NUM_PAST];
-        final long mPastTime[] = new long[NUM_PAST];
+        final float[] mPastX = new float[NUM_PAST];
+        final float[] mPastY = new float[NUM_PAST];
+        final long[] mPastTime = new long[NUM_PAST];
 
         float mYVelocity;
         float mXVelocity;

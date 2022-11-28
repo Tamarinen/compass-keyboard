@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "org.dyndns.fules.ck"
@@ -17,13 +16,14 @@ android {
         }
     }
 
-    lintOptions {
-        abortOnError false
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    lint {
+        abortOnError false
+    }
+    namespace 'org.dyndns.fules.ck'
 }
 
 allprojects {
@@ -34,5 +34,6 @@ allprojects {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
+    implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }
