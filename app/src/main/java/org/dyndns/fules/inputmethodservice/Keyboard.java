@@ -100,10 +100,10 @@ public class Keyboard {
     private boolean mShifted;
     
     /** Key instance for the shift key, if present */
-    private Key[] mShiftKeys = { null, null };
+    private final Key[] mShiftKeys = { null, null };
 
     /** Key index for the shift key, if present */
-    private int[] mShiftKeyIndices = {-1, -1};
+    private final int[] mShiftKeyIndices = {-1, -1};
 
     /** Current key width, while loading the keyboard */
     private int mKeyWidth;
@@ -121,19 +121,19 @@ public class Keyboard {
     private int mTotalWidth;
     
     /** List of keys in this keyboard */
-    private List<Key> mKeys;
+    private final List<Key> mKeys;
     
     /** List of modifier keys such as Shift & Alt, if any */
-    private List<Key> mModifierKeys;
+    private final List<Key> mModifierKeys;
     
     /** Width of the screen available to fit the keyboard */
-    private int mDisplayWidth;
+    private final int mDisplayWidth;
 
     /** Height of the screen */
-    private int mDisplayHeight;
+    private final int mDisplayHeight;
 
     /** Keyboard mode, or zero, if none.  */
-    private int mKeyboardMode;
+    private final int mKeyboardMode;
 
     // Variables for pre-computing nearest keys.
     
@@ -145,9 +145,9 @@ public class Keyboard {
     private int[][] mGridNeighbors;
     private int mProximityThreshold;
     /** Number of key widths from current touch point to search for nearest keys. */
-    private static float SEARCH_DISTANCE = 1.8f;
+    private static final float SEARCH_DISTANCE = 1.8f;
 
-    private ArrayList<Row> rows = new ArrayList<Row>();
+    private final ArrayList<Row> rows = new ArrayList<Row>();
 
     /**
      * Container for keys in the keyboard. All keys in a row are at the same Y-coordinate. 
@@ -181,7 +181,7 @@ public class Keyboard {
         /** The keyboard mode for this row */
         public int mode;
         
-        private Keyboard parent;
+        private final Keyboard parent;
 
         public Row(Keyboard parent) {
             this.parent = parent;
@@ -276,7 +276,7 @@ public class Keyboard {
         /** Whether this is a modifier key, such as Shift or Alt */
         public boolean modifier;
         /** The keyboard that this key belongs to */
-        private Keyboard keyboard;
+        private final Keyboard keyboard;
         /** 
          * If this key pops up a mini keyboard, this is the resource id for the XML layout for that
          * keyboard.
@@ -463,14 +463,10 @@ public class Keyboard {
             boolean rightEdge = (edgeFlags & EDGE_RIGHT) > 0;
             boolean topEdge = (edgeFlags & EDGE_TOP) > 0;
             boolean bottomEdge = (edgeFlags & EDGE_BOTTOM) > 0;
-            if ((x >= this.x || (leftEdge && x <= this.x + this.width)) 
-                    && (x < this.x + this.width || (rightEdge && x >= this.x)) 
+            return (x >= this.x || (leftEdge && x <= this.x + this.width))
+                    && (x < this.x + this.width || (rightEdge && x >= this.x))
                     && (y >= this.y || (topEdge && y <= this.y + this.height))
-                    && (y < this.y + this.height || (bottomEdge && y >= this.y))) {
-                return true;
-            } else {
-                return false;
-            }
+                    && (y < this.y + this.height || (bottomEdge && y >= this.y));
         }
 
         /**
