@@ -1,0 +1,284 @@
+
+<!-- saved from url=(0036)http://columbiegg.com/starboard.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body><h3 class="text" id="statusdiv">Status</h3>
+<h3 class="text" id="outdiv">Output</h3>
+<style>
+@media all and (orientation:portrait) {
+  .box {
+    width:25vw;
+    height:25vw;
+  }
+
+  .row {
+    position:absolute;
+    width:100vw;
+  }
+
+  .top {
+    bottom:25vw;
+  }
+
+  .bottom {
+    bottom:0vw;
+  }
+
+  .content {
+    font-size:6.25vw;
+  }
+
+  #floater {
+    width:50vw;
+    height:50vw;
+    bottom:50vw;
+    left:25vw;
+  }
+
+  #floater-content {
+    font-size:12.5vw;
+  }
+}
+
+@media all and (orientation:landscape) {
+  .box {
+    width:12.5vw;
+    height:12.5vw;
+  }
+
+  .row {
+    width:50vw;
+    position:absolute;
+    bottom:0;
+  }
+
+  .left {
+    left:0vw;
+  }
+
+  .right {
+    left:50vw;
+  }
+
+  .content {
+    font-size:3.125vw;
+  }
+
+  #floater {
+    width:25vw;
+    height:25vw;
+    bottom:12.5vw;
+    left:37.5vw;
+  }
+
+  #floater-content {
+    font-size:6.25vw;
+  }
+}
+
+.box {
+  position: relative;
+  #width: 50%;/* desired width */
+  border:1px solid black;
+  display:inline-block;
+  margin:-1px;
+}
+
+#floater {
+  position:absolute;
+  border:0.25vw solid blue;
+}
+
+.content{
+  position:  absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  line-height:120%;
+  font-family:monospace;
+  border:0.25vw solid green;
+  margin:-1px;
+}
+
+.row {
+  display:inline-block;
+  border:1px solid red;
+  margin:-1px;
+}
+
+.container {
+  width:100%;
+}-
+
+.text {
+   font-size:2vw;
+}
+</style>
+
+<div id="floater">
+  <div id="floater-content">q w e<br>a s d<br>z x c</div>
+</div>
+
+<div class="row top left" id="row1">
+<div class="box" id="box11">
+  <div class="content">! " #<br>1 2 3<br><strike>E S C</strike></div>
+ </div><div class="box" id="box12">
+  <div class="content">$ % &amp;<br>4 5 6<br>[ { &lt;</div>
+ </div><div class="box" id="box13">
+  <div class="content">( / )<br>7 8 9<br>&gt; } ]</div>
+ </div><div class="box" id="box14">
+  <div class="content">= ↑ @<br>← 0 →<br>- ↓ +</div>
+ </div>
+</div>
+<div class="row bottom right" id="row2">
+ <div class="box" id="box21">
+  <div class="content">q w e<br>a s d<br>z x c</div>
+ </div><div class="box" id="box22">
+  <div class="content">r t y<br>f g h<br>v &nbsp; b</div>
+ </div><div class="box" id="box23">
+  <div class="content">u i o<br>j k l<br>n &nbsp; m</div>
+ </div><div class="box" id="box24">
+  <div class="content">p å ↵<br>ö ä *<br>, . ?</div>
+ </div>
+</div>
+<script>
+ 
+window.addEventListener('load', function(){
+ 
+ var box11 = document.getElementById('box11')
+ var box12 = document.getElementById('box12')
+ var box13 = document.getElementById('box13')
+ var box14 = document.getElementById('box14')
+
+ var box21 = document.getElementById('box21')
+ var box22 = document.getElementById('box22')
+ var box23 = document.getElementById('box23')
+ var box24 = document.getElementById('box24')
+
+ var statusdiv = document.getElementById('statusdiv')
+ var outdiv = document.getElementById('outdiv')
+ var startx = 0;
+ var distx = 0;
+ var starty = 0;
+ var disty = 0;
+ var output;
+ outdiv.outstring = "";
+
+ function touchstart(e){
+  var touchobj = e.changedTouches[0] // reference first touch point (ie: first finger)
+  startx = parseInt(touchobj.clientX)
+  starty = parseInt(touchobj.clientY)
+  statusdiv.innerHTML = 'Status: touchstart: ' + startx + ', ' + starty
+  e.preventDefault()
+ }
+
+ function touchmove(e){
+  var touchobj = e.changedTouches[0] // reference first touch point for this event
+  var distx = parseInt(touchobj.clientX) - startx
+  var disty = parseInt(touchobj.clientY) - starty
+  statusdiv.innerHTML = 'Status: touchmove: ' + distx + ', ' + disty
+  e.preventDefault()
+ }
+
+ function touchend(e){
+  var touchobj = e.changedTouches[0]; // reference first touch point for this event
+  var endx = parseInt(touchobj.clientX);
+  var endy = parseInt(touchobj.clientY);
+  var distx = endx - startx;
+  var disty = endy - starty;
+  var slackx = Math.abs(disty)/2;
+  var slacky = Math.abs(distx)/2;
+  var diaslack = Math.max(slackx, slacky);
+  var tapdist = 30;
+  var out = "output";
+  var outchar = "";
+
+  if(Math.abs(distx) < tapdist && Math.abs(disty) < tapdist) {
+    out = "tap";
+    outchar = this.chars[4];
+  } else if(disty < 0-tapdist && Math.abs(distx) < slackx) {
+    out = "up";
+    outchar = this.chars[1];
+  } else if(disty > tapdist && Math.abs(distx) < slackx) {
+    out = "down";
+    outchar = this.chars[7];
+  } else if(distx < 0-tapdist && Math.abs(disty) < slacky) {
+    out = "left";
+    outchar = this.chars[3];
+  } else if(distx > tapdist && Math.abs(disty) < slacky) {
+    out = "right";
+    outchar = this.chars[5];
+  } else if(Math.abs(Math.abs(distx) - Math.abs(disty)) < diaslack) {
+    if(distx < 0 && disty < 0) {
+      out = "up-left";
+      outchar = this.chars[0];
+    } else if(distx > 0 && disty < 0) {
+      out = "up-right";
+      outchar = this.chars[2];
+    } else if(distx < 0 && disty > 0) {
+      out = "down-left";
+      outchar = this.chars[6];
+    } else if(distx > 0 && disty > 0) {
+      out = "down-right";
+      outchar = this.chars[8];
+    } else {
+      out = "other diagonal";
+      outchar = "";
+    }
+  } else {
+    out = "other straight";
+    outchar = "";
+  }
+
+  out = out + " ("+distx+", "+disty+", "+slackx+", "+slacky+")<br>";
+  out = out + Math.abs(distx - disty) +", "+diaslack+"<br>";
+  outdiv.outstring = outdiv.outstring + outchar;
+  outdiv.innerHTML = out + outdiv.outstring;
+  statusdiv.innerHTML = 'Status: touchend: ' + endx + ', ' + endy + '<br>debug: '+this.chars;
+  e.preventDefault()
+ }
+
+ box11.addEventListener('touchstart', touchstart, false)
+ box11.addEventListener('touchmove', touchmove, false)
+ box11.addEventListener('touchend', touchend, false)
+ box11.chars = ["!", "&quot;", "#", "1", "2", "3", "<strike>E</strike>", "<strike>S</strike>", "<strike>C</strike>"];
+
+ box12.addEventListener('touchstart', touchstart, false)
+ box12.addEventListener('touchmove', touchmove, false)
+ box12.addEventListener('touchend', touchend, false)
+ box12.chars =["$", "%", "&", "4", "5", "6", "[", "{", "&lt;"]
+
+ box13.addEventListener('touchstart', touchstart, false)
+ box13.addEventListener('touchmove', touchmove, false)
+ box13.addEventListener('touchend', touchend, false)
+ box13.chars =["(", "/", ")", "7", "8", "9", ">", "}", "]"]
+
+ box14.addEventListener('touchstart', touchstart, false)
+ box14.addEventListener('touchmove', touchmove, false)
+ box14.addEventListener('touchend', touchend, false)
+ box14.chars =["=", "&#x02191", "@", "&slarr;", "0", "&srarr;", "-", "&darr;", "+"]
+
+ box21.addEventListener('touchstart', touchstart, false)
+ box21.addEventListener('touchmove', touchmove, false)
+ box21.addEventListener('touchend', touchend, false)
+ box21.chars =["q", "w", "e", "a", "s", "d", "z", "x", "c"]
+
+ box22.addEventListener('touchstart', touchstart, false)
+ box22.addEventListener('touchmove', touchmove, false)
+ box22.addEventListener('touchend', touchend, false)
+ box22.chars =["r", "t", "y", "f", "g", "h", "v", "&nbsp;", "b"]
+
+ box23.addEventListener('touchstart', touchstart, false)
+ box23.addEventListener('touchmove', touchmove, false)
+ box23.addEventListener('touchend', touchend, false)
+ box23.chars =["u", "i", "o", "j", "k", "l", "n", "&nbsp;", "m"]
+
+ box24.addEventListener('touchstart', touchstart, false)
+ box24.addEventListener('touchmove', touchmove, false)
+ box24.addEventListener('touchend', touchend, false)
+ box24.chars =["p", "å", "&crarr;", "ö", "ä", "*", ",", ".", "?"]
+
+}, false)
+ 
+ 
+</script>
+</body></html>
