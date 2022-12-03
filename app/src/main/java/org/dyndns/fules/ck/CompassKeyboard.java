@@ -93,9 +93,9 @@ public class CompassKeyboard extends InputMethodService implements KeyboardView.
 			//Subtext for your notification
 			notificationCompatBuilder.setContentText(msg);
 			//Small Icon for your notification
-			notificationCompatBuilder.setSmallIcon(R.id.icon);
+			notificationCompatBuilder.setSmallIcon(R.drawable.icon_launcher);
 			//Large Icon for your notification
-			notificationCompatBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.id.icon));
+			notificationCompatBuilder.setSmallIcon(R.drawable.icon_launcher);
 
 			NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 			notificationManager.notify(42, notificationCompatBuilder.build());
