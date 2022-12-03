@@ -172,6 +172,7 @@ public class CompassKeyboardView extends FrameLayout {
 	// Internal params
 	int					nColumns;	// maximal number of symbol columns (eg. 3 for full key, 2 for side key), used for size calculations
 	int					nKeys;		// maximal number of keys per row, used for calculating with the gaps between keys
+	int					nRows;		// number of rows parsed in the layout file
 	int					sym, gap;	// size of symbols on keys and gap between them (in pixels)
 	float					fontSize;	// height of the key caption font in pixels
 	float					fontDispY;	// Y-displacement of key caption font (top to baseline)
@@ -733,7 +734,9 @@ public class CompassKeyboardView extends FrameLayout {
 		}
 
 		@Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-			setMeasuredDimension(kbd.getWidth(), kbd.getHeight());
+			int kbw = kbd.getWidth();
+			int kbh = kbd.getWidth() / nKeys;
+			setMeasuredDimension(kbw, kbh);
 		}
 
 		void setDir(int d) {
@@ -816,13 +819,14 @@ public class CompassKeyboardView extends FrameLayout {
 		globalDir = new Action[9];
 
 		kbd.removeAllViews();
-		nColumns = nKeys = 0;
+		nColumns = nKeys = nRows = 0;
 		int nextGlobalSwipe = NW;
 		while (parser.getEventType() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG)
 				throw new XmlPullParserException("Expected content tag", parser, null);
 
 			if (parser.getName().contentEquals("Row")) {
+				nRows ++;
 				Row nr = new CompassKeyboardView.Row(getContext(), parser);
 				kbd.addView(nr, lp);
 
