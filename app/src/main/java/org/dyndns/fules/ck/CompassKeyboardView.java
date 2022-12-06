@@ -207,50 +207,6 @@ public class CompassKeyboardView extends FrameLayout {
 	}
 
 	/*
-	 * <Align> tag
-	 */
-	class Align extends View implements EmbeddableItem {
-		int width, height;
-		int xmax, ymax;
-
-		public Align(Context context, XmlPullParser parser) throws XmlPullParserException, IOException {
-			super(context);
-			String s;
-
-			if ((parser.getEventType() != XmlPullParser.START_TAG) || !parser.getName().contentEquals("Align"))
-				throw new XmlPullParserException("Expected <Align>", parser, null);
-
-			width = height = xmax = ymax = 0;
-
-			s = parser.getAttributeValue(null, "width");
-			if (s != null)
-				width = Integer.parseInt(s);
-
-			s = parser.getAttributeValue(null, "height");
-			if (s != null)
-				height = Integer.parseInt(s);
-
-			parser.nextTag();
-			if ((parser.getEventType() != XmlPullParser.END_TAG) || !parser.getName().contentEquals("Align"))
-				throw new XmlPullParserException("Expected </Align>", parser, null);
-			parser.nextTag();
-		}
-
-		// Recalculate the drawing coordinates according to the symbol size
-		public void calculateSizes() {
-			xmax = Math.round(width * (sym + gap));
-			ymax = Math.round(height * fontSize);
-		}
-
-		// Report the size of the alignment
-		@Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-			int w = (View.MeasureSpec.getMode(widthMeasureSpec) == View.MeasureSpec.EXACTLY) ? View.MeasureSpec.getSize(widthMeasureSpec) : xmax;
-			int h = (View.MeasureSpec.getMode(heightMeasureSpec) == View.MeasureSpec.EXACTLY) ? View.MeasureSpec.getSize(heightMeasureSpec) : ymax;
-			setMeasuredDimension(w, h);
-		}
-	}
-
-	/*
 	 * <Row> tag
 	 */ 
 	class Row extends LinearLayout implements EmbeddableItem {
@@ -259,7 +215,6 @@ public class CompassKeyboardView extends FrameLayout {
 		int	columns;				// number of symbol columns (eg. 3 for full key, 2 for side key), used for size calculations
 		Paint	buttonPaint;				// Paint used for drawing the key background
 		Paint	framePaint;				// Paint used for drawing the key frame
-		boolean	hasTop, hasBottom;			// does all the keys in the row have tops and bottoms?
 
 		/*
 		 * <Key> tag
@@ -271,8 +226,6 @@ public class CompassKeyboardView extends FrameLayout {
 			int			x1, x2, x3;		// x positions of the symbol columns within the key
 			ArrayList<State>	state;			// the modifier <State> tags within this <Key>
 			State			currentState = null;	// the currently selected <State>, according to @CompassKeyboardView::modifiers
-			boolean			hasLeft, hasRight;	// does the key have the given left and right symbols?
-			boolean			hasTop, hasBottom;	// does the key have tops and bottoms? (NOTE: can only be stricter than the row!)
 			int			candidateDir;		// the direction into which a drag is in progress, or NONE if inactive
 
 			/*
@@ -303,25 +256,15 @@ public class CompassKeyboardView extends FrameLayout {
 
 					parser.nextTag();
 
-					if (Row.this.hasTop && Key.this.hasTop) {
-						if (hasLeft)
-							dir[NW] = new Action(parser);
-						dir[N] = new Action(parser);
-						if (hasRight)
-							dir[NE] = new Action(parser);
-					}
-					if (hasLeft)
-						dir[W] = new Action(parser);
+					dir[NW] = new Action(parser);
+					dir[N] = new Action(parser);
+					dir[NE] = new Action(parser);
+					dir[W] = new Action(parser);
 					dir[TAP] = new Action(parser);
-					if (hasRight)
-						dir[E] = new Action(parser);
-					if (Row.this.hasBottom && Key.this.hasBottom) {
-						if (hasLeft)
-							dir[SW] = new Action(parser);
-						dir[S] = new Action(parser);
-						if (hasRight)
-							dir[SE] = new Action(parser);
-					}
+					dir[E] = new Action(parser);
+					dir[SW] = new Action(parser);
+					dir[S] = new Action(parser);
+					dir[SE] = new Action(parser);
 
 					// delete empty entries
 					for (int i = 0; i < 9; i++) {
@@ -347,27 +290,10 @@ public class CompassKeyboardView extends FrameLayout {
 				if ((parser.getEventType() != XmlPullParser.START_TAG) || !parser.getName().contentEquals("Key"))
 					throw new XmlPullParserException("Expected <Key>", parser, null);
 
-				hasLeft = hasRight = hasTop = hasBottom = true;
 				state = new ArrayList();
 
 				s = parser.getAttributeValue(null, "name");
 				//if (s != null) Log.d(TAG, "Loading key '"+s+"'");
-
-				s = parser.getAttributeValue(null, "has_left");
-				if ((s != null) && (Integer.parseInt(s) == 0))
-					hasLeft = false;
-
-				s = parser.getAttributeValue(null, "has_right");
-				if ((s != null) && (Integer.parseInt(s) == 0))
-					hasRight = false;
-
-				s = parser.getAttributeValue(null, "has_top");
-				if ((s != null) && (Integer.parseInt(s) == 0))
-					hasTop = false;
-
-				s = parser.getAttributeValue(null, "has_bottom");
-				if ((s != null) && (Integer.parseInt(s) == 0))
-					hasBottom = false;
 
 				parser.nextTag();
 				while (parser.getEventType() != XmlPullParser.END_TAG) {
@@ -399,30 +325,11 @@ public class CompassKeyboardView extends FrameLayout {
 
 			// Recalculate the drawing coordinates according to the symbol size
 			public void calculateSizes() {
-				if (hasLeft) {
-					if (hasRight) {
-						xmax	= Math.round(4 * gap + 3    * sym);
-						x1	= Math.round(    gap + 0.5f * sym);
-						x2	= Math.round(2 * gap + 1.5f * sym);
-						x3	= Math.round(3 * gap + 2.5f * sym);
-					}
-					else {
-						xmax	= Math.round(3 * gap + 2    * sym);
-						x1	= Math.round(    gap + 0.5f * sym);
-						x2 = x3	= Math.round(2 * gap + 1.5f * sym);
-					}
-				}
-				else {
-					if (hasRight) {
-						xmax	= Math.round(3 * gap + 2    * sym);
-						x1 = x2	= Math.round(    gap + 0.5f * sym);
-						x3	= Math.round(2 * gap + 1.5f * sym);
-					}
-					else {
-						xmax	= Math.round(2 * gap +        sym);
-						x1 = x2 = x3 = Math.round(gap + 0.5f * sym);
-					}
-				}
+				xmax	= Math.round(4 * gap + 3    * sym);
+				x1	= Math.round(    gap + 0.5f * sym);
+				x2	= Math.round(2 * gap + 1.5f * sym);
+				x3	= Math.round(3 * gap + 2.5f * sym);
+
 				fullRect = new RectF(0, 0, xmax - 1, ymax - 1);
 				innerRect = new RectF(2, 2, xmax - 3, ymax - 3);
 			}
@@ -587,22 +494,12 @@ public class CompassKeyboardView extends FrameLayout {
 			framePaint.setAntiAlias(true);
 			framePaint.setColor(Color.LTGRAY);
 
-			hasTop = hasBottom = true;
-
 			int eventType = parser.getEventType();
 			if ((parser.getEventType() != XmlPullParser.START_TAG) || !parser.getName().contentEquals("Row"))
 				throw new XmlPullParserException("Expected <Row>", parser, null);
 
 			//s = parser.getAttributeValue(null, "name");
 			//Log.d(TAG, "Reading row; name='" + (s != null ? s : "<null>")  + "'");
-
-			s = parser.getAttributeValue(null, "has_top");
-			if ((s != null) && (Integer.parseInt(s) == 0))
-				hasTop = false;
-
-			s = parser.getAttributeValue(null, "has_bottom");
-			if ((s != null) && (Integer.parseInt(s) == 0))
-				hasBottom = false;
 
 			parser.nextTag();
 			columns = 0;
@@ -613,18 +510,11 @@ public class CompassKeyboardView extends FrameLayout {
 				if (parser.getName().contentEquals("Key")) {
 					Key nk = new Key(getContext(), parser);
 
-					columns++;
-					if (nk.hasLeft)
-						columns++;
-					if (nk.hasRight)
-						columns++;
+					columns += 3;
 					addView(nk, lp);
 				}
-				else if (parser.getName().contentEquals("Align")) {
-					Align na = new Align(getContext(), parser);
-
-					columns += na.width;
-					addView(na, lp);
+				else {
+					throw new XmlPullParserException("Unknown Row tag " + parser.getName(), parser, null);
 				}
 			}
 			if (!parser.getName().contentEquals("Row"))
@@ -645,30 +535,10 @@ public class CompassKeyboardView extends FrameLayout {
 
 		// Recalculate the drawing coordinates according to the symbol size
 		public void calculateSizes() {
-			if (hasTop) {
-				if (hasBottom) {
-					ymax	= Math.round(2 * gap + 3 * fontSize);
-					y1	= Math.round(    gap +                fontDispY);
-					y2	= Math.round(    gap + 1 * fontSize + fontDispY);
-					y3	= Math.round(    gap + 2 * fontSize + fontDispY);
-				}
-				else {
-					ymax	= Math.round(2 * gap + 2 * fontSize);
-					y1	= Math.round(    gap +                fontDispY);
-					y2 = y3	= Math.round(    gap + 1 * fontSize + fontDispY);
-				}
-			}
-			else {
-				if (hasBottom) {
-					ymax	= Math.round(2 * gap + 2 * fontSize);
-					y1 = y2	= Math.round(    gap +                fontDispY);
-					y3	= Math.round(    gap + 1 * fontSize + fontDispY);
-				}
-				else {
-					ymax	= Math.round(2 * gap + fontSize);
-					y1 = y2 = y3 = Math.round(gap +         fontDispY);
-				}
-			}
+			ymax	= Math.round(2 * gap + 3 * fontSize);
+			y1	= Math.round(    gap +                fontDispY);
+			y2	= Math.round(    gap + 1 * fontSize + fontDispY);
+			y3	= Math.round(    gap + 2 * fontSize + fontDispY);
 
 			// Set the key background color
 			buttonPaint.setShader(new LinearGradient(0, 0, 0, ymax, 0xff696969, 0xff0a0a0a, android.graphics.Shader.TileMode.CLAMP));
@@ -836,13 +706,6 @@ public class CompassKeyboardView extends FrameLayout {
 				if (nKeys < nc)
 					nKeys = nc;
 			}
-			else if (parser.getName().contentEquals("Align")) {
-				Align na = new Align(getContext(), parser);
-				kbd.addView(na, lp);
-
-				if (nColumns < na.width)
-					nColumns = na.width;
-			}
 			else if (parser.getName().contentEquals("Action")) {
 				if (nextGlobalSwipe > SE) {
 					Log.e(TAG, "Too many global swipe Actions;");
@@ -853,6 +716,9 @@ public class CompassKeyboardView extends FrameLayout {
 						globalDir[nextGlobalSwipe] = null;
 					nextGlobalSwipe++;
 				}
+			}
+			else {
+				throw new XmlPullParserException("Unknown Layout tag " + parser.getName(), parser, null);
 			}
 		}
 		if (!parser.getName().contentEquals("Layout"))
